@@ -1,0 +1,83 @@
+Chart for byte 4 (MSB torque)
+Bit       value 
+0(1)      B
+1(2)      16
+2(4)      2C
+3(8)      58
+4(10)     B0
+5(20)     60 
+6(40)     C0 
+7(80)     1
+
+(Ax C0)
+7A (0111 1010) = F9
+7F (0111 1111) = DE
+80 (1000 0000) = A6
+
+(Ax D2)
+7A (0111 1010) = 2A
+7D (0111 1101) = 1B
+7E (0111 1110) = 6
+80 (1000 0000) = 75
+82 (1000 0010) = 63
+
+(9x D2)
+7d (0111 1101) = 4f
+7e (0111 1110) = 52
+
+97 d4 7d = ce
+a5 d3 7d = ce
+
+So switching from 90's to A0's means take one away from the LSB value
+or switching from A0's to 90's means add one to LSB. either way would be valid
+
+A0's are same as 60's
+90's same as 50's for calc purposes.
+
+
+The same principle as above does not seem to work for
+the third byte. It'll work so long as the 4th byte is the same sometimes
+but really it isn't reliable so something else must be going on. 
+
+
+Chart for byte 3 (MSB torque) when Byte 4 is 0x7D
+Bit       value
+0(1)      AA 
+1(2)      7F 
+2(4)      FE 
+3(8)      29 
+4(10)     52
+5(20)     A4
+6(40)     9D
+7(80)     EF
+
+
+93 50(0101 0000) 7d = DF (time = 10:00.1)
+93 60(0110 0000) 7d = 29
+93 70(0111 0000) 7d = 7B
+93 12(0001 0010) 7d = 3d
+93 82(1000 0010) 7d = 80
+
+93 DD(1101 1101) 7D = 4D   (time = 9:43.4)
+93 9D(1001 1101) 7D = D0
+93 AD(1010 1101) 7D = 26
+
+All 8 of the above values match the chart. So, it seems the chart is constant so long
+as byte 4 is constant. I believe some entries in the chart are still the same when changing byte 4
+but not all are. Let's try some more random examples with 7D as byte 4.
+
+93 CC (1100 1100) 7D = B5 (matches)
+93 8A (1000 1010) 7D = A9 (matches)
+93 57 (0101 0111) 7D = 23 (does not match. XOR between result and correct answer is D7) time=10:00.2
+
+(remember, take one away from byte 3 to process these because of the 0xA?)
+A1 3D (0011 1100) 7D = 99 (does not match. XOR of answer and correct answer is A8)
+A1 47 (0100 0110) 7D = A4 (does not match. XOR of result and correct answer is A8)
+A1 53 (0101 0010) 7D = 21 (no match - xor result to answer = 0x81)
+
+209 74 7d e7 8a 8d 7d cf 7b
+93 50 7d = DF
+
+209 7e 7d e9 8a 8d 7d e8 7b
+93 57 7d = 23
+
