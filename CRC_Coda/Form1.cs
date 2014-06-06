@@ -78,15 +78,15 @@ namespace CRC_Coda
             b3 = byte.Parse(txtFullByte3.Text, System.Globalization.NumberStyles.HexNumber);
             b4 = byte.Parse(txtFullByte4.Text, System.Globalization.NumberStyles.HexNumber);
 
-            if ((b3 % 4) == 3) b3 += 4; //yes... really... Don't ask.
-
             crc = 0x7F; //7F is the answer if bytes 3 and 4 are zero. We build up from there.
 
             //if b2 was 0xAx or 0x6x then subtract 1 from byte 3. Otherwise leave it alone.
             if (((b2 & 0xA0) == 0xA0) || ((b2 & 0x60) == 0x60))
             {
-                b3 -= 1;
+                b3 += 1;
             }
+
+            if ((b3 % 4) == 3) b3 += 4; //yes... really... Don't ask.
 
             for (int i = 0; i < 8; i++)
             {
