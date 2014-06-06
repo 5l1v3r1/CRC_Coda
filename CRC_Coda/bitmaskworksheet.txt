@@ -51,33 +51,63 @@ Bit       value
 6(40)     9D
 7(80)     EF
 
-
-93 50(0101 0000) 7d = DF (time = 10:00.1)
+93 11(0001 0001) 7D = E8
+93 12(0001 0010) 7d = 3d
+93 1A(0001 1010) 7d = 14
+93 1D(0001 1101) 7D = 3F
+93 26(0010 0110) 7D = 35
+93 28(0010 1000) 7D = 9D
+93 50(0101 0000) 7d = DF 
 93 60(0110 0000) 7d = 29
 93 70(0111 0000) 7d = 7B
-93 12(0001 0010) 7d = 3d
 93 82(1000 0010) 7d = 80
-
-93 DD(1101 1101) 7D = 4D   (time = 9:43.4)
+93 80(1000 0000) 7d = FF
+93 DD(1101 1101) 7D = 4D   
 93 9D(1001 1101) 7D = D0
 93 AD(1010 1101) 7D = 26
+93 CC (1100 1100) 7D = B5 
+93 8A (1000 1010) 7D = A9 
 
-All 8 of the above values match the chart. So, it seems the chart is constant so long
+(93 00 7D = 10)
+(93 00 00 = 7F)
+
+
+All of the above values match the chart. So, it seems the chart is constant so long
 as byte 4 is constant. I believe some entries in the chart are still the same when changing byte 4
 but not all are. Let's try some more random examples with 7D as byte 4.
 
-93 CC (1100 1100) 7D = B5 (matches)
-93 8A (1000 1010) 7D = A9 (matches)
-93 57 (0101 0111) 7D = 23 (does not match. XOR between result and correct answer is D7) time=10:00.2
+93 57 (0101 0111) 7D = 23 (does not match. XOR between result and correct answer is D7)
+(Above would match if the following is XOR'd to 57 before the bits are used -> 0000 1100 = C) - which turns 57 into 5B
 
-(remember, take one away from byte 3 to process these because of the 0xA?)
-A1 3D (0011 1100) 7D = 99 (does not match. XOR of answer and correct answer is A8)
-A1 47 (0100 0110) 7D = A4 (does not match. XOR of result and correct answer is A8)
-A1 53 (0101 0010) 7D = 21 (no match - xor result to answer = 0x81)
+93 5B (0101 1011) 7D = DD (which, of course, is not the same answer as above! No match, XOR braca = FE)
+(So, must toggle bit 2 or 0000 0100)
 
-209 74 7d e7 8a 8d 7d cf 7b
-93 50 7d = DF
+Other wrong ones:
+93 1B 7D = 40 (calc answer = BE) 
+(so, must toggle bit 2 0000 0100)
 
-209 7e 7d e9 8a 8d 7d e8 7b
-93 57 7d = 23
+93 33 7D = CD (calc answer = 33)
+(must also toggle bit 2 0000 0100)
+
+93 37 7D = 1A (calc = CD) D7
+(toggling factor = 0000 1100)
+
+93 3b 7d = E4 (calc = 1A) FE
+(toggling factor = 0000 0100)
+
+93 47 7D = 71 (calc = A6) D7
+(toggling factor = 0000 1100)
+
+There seems to be a pattern that turns ?3 into ?7, ?7 to ?B, and ?B to ?F. I'll bet it turns ?F into ?3
+This pattern would be (X + 4) where X is 3, 7, B, or F. It's possible that going from F to 3 also does properly
+increment the high nibble. This pattern could be implemented by doing %4 and seeing if the value is 3.
+I have confirmed (with 93 5F 7D) that you do add 4 no matter what even if it wraps to the next nibble
+5F turns into 63. 
+
+
+
+ 
+
+
+
 

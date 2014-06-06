@@ -40,6 +40,8 @@
             this.txtFullByte2 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txtB3Sec = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.txtB3CRC = new System.Windows.Forms.TextBox();
@@ -48,8 +50,6 @@
             this.label9 = new System.Windows.Forms.Label();
             this.txtB3First = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.txtB3Sec = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -90,6 +90,7 @@
             this.button1.TabIndex = 18;
             this.button1.Text = "calculate";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
             // txtFullCRC
             // 
@@ -174,6 +175,22 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Calc Based on Diff In Byte 3";
             // 
+            // txtB3Sec
+            // 
+            this.txtB3Sec.Location = new System.Drawing.Point(71, 99);
+            this.txtB3Sec.Name = "txtB3Sec";
+            this.txtB3Sec.Size = new System.Drawing.Size(50, 20);
+            this.txtB3Sec.TabIndex = 21;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 99);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(62, 13);
+            this.label8.TabIndex = 20;
+            this.label8.Text = "Sec. Byte 3";
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -241,22 +258,6 @@
             this.label10.Size = new System.Drawing.Size(59, 13);
             this.label10.TabIndex = 10;
             this.label10.Text = "First Byte 3";
-            // 
-            // txtB3Sec
-            // 
-            this.txtB3Sec.Location = new System.Drawing.Point(71, 99);
-            this.txtB3Sec.Name = "txtB3Sec";
-            this.txtB3Sec.Size = new System.Drawing.Size(50, 20);
-            this.txtB3Sec.TabIndex = 21;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 99);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(62, 13);
-            this.label8.TabIndex = 20;
-            this.label8.Text = "Sec. Byte 3";
             // 
             // Form1
             // 
