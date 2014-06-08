@@ -73,19 +73,21 @@ namespace CRC_Coda
 
         private byte calcCodaCRC(byte cmd, byte torqLow, byte torqHi) {
             byte crc;
+            int tempTorqLow = torqLow;
 
             crc = 0x7F; //7F is the answer if bytes 3 and 4 are zero. We build up from there.
-
-            //it seems to be important for this operation to happen before the next two.
-            if ((torqLow == 0xFF) || (torqLow == 0xFE)) torqHi += 1;
 
             //if b2 was 0xAx or 0x6x then subtract 1 from byte 3. Otherwise leave it alone.
             if (((cmd & 0xA0) == 0xA0) || ((cmd & 0x60) == 0x60))
             {
-                torqLow += 1;
+                tempTorqLow += 1;
             }
 
-            if ((torqLow % 4) == 3) torqLow += 4; //yes... really... Don't ask.
+            if ((tempTorqLow % 4) == 3) tempTorqLow += 4; //yes... really... Don't ask.
+
+            if (tempTorqLow > 0xFF) torqHi++;
+
+            torqLow = (byte)(tempTorqLow & 0xFF);
 
             for (int i = 0; i < 8; i++)
             {
