@@ -17,8 +17,7 @@ namespace CRC_Coda
         //These tables can be taken on faith. They work. I don't why precisely why
         //these values were chosen. If you want to know how the table was derived then take
         //a peek at bitmaskworksheet.
-        byte[] byte4Table = { 0xB, 0x16, 0x2C, 0x58, 0xB0, 0x60, 0xC0, 1 };
-        byte[] byte3Table = { 0xAA, 0x7F, 0xFE, 0x29, 0x52, 0xA4, 0x9D, 0xEF };
+        byte[] swizzleTable = { 0xAA, 0x7F, 0xFE, 0x29, 0x52, 0xA4, 0x9D, 0xEF, 0xB, 0x16, 0x2C, 0x58, 0xB0, 0x60, 0xC0, 1 };
 
         public Form1()
         {
@@ -42,27 +41,8 @@ namespace CRC_Coda
 
         }
 
-
-        //little different here... take the two values from byte 3 and find the bit differences. Then take the value
-        //of the first and try to turn it into the proper value for the second by XOR'ing by the proper
-        //bit masks. 
         private void button2_Click(object sender, EventArgs e)
         {
-            b2 = byte.Parse(txtB3First.Text, System.Globalization.NumberStyles.HexNumber);
-            b3 = byte.Parse(txtB3Sec.Text, System.Globalization.NumberStyles.HexNumber);
-
-            b4 = (byte)(b2 ^ b3);
-
-            crc = byte.Parse(txtInCRC.Text, System.Globalization.NumberStyles.HexNumber);
-
-            for (int i = 0; i < 8; i++)
-            {
-                if ((b4 & (1 << i)) == (1 << i))
-                {
-                    crc = (byte)(crc ^ byte3Table[i]);
-                }
-            }
-            txtB3CRC.Text = crc.ToString("X2");
         }
 
         private void label9_Click(object sender, EventArgs e)
@@ -73,34 +53,23 @@ namespace CRC_Coda
 
         private byte calcCodaCRC(byte cmd, byte torqLow, byte torqHi) {
             byte crc;
-            int tempTorqLow = torqLow;
+            int tempTorq = torqLow + (256 * torqHi);
 
-            crc = 0x7F; //7F is the answer if bytes 3 and 4 are zero. We build up from there.
+            crc = 0x7F; //7F is the answer if torque bytes are zero. We build up from there.
 
-            //if b2 was 0xAx or 0x6x then subtract 1 from byte 3. Otherwise leave it alone.
+            //if b2 was 0xAx or 0x6x then add 1 to torque. Otherwise leave it alone.
             if (((cmd & 0xA0) == 0xA0) || ((cmd & 0x60) == 0x60))
             {
-                tempTorqLow += 1;
+                tempTorq += 1;
             }
 
-            if ((tempTorqLow % 4) == 3) tempTorqLow += 4; //yes... really... Don't ask.
+            if ((tempTorq % 4) == 3) tempTorq += 4; //Seems to be some form of obfuscation
 
-            if (tempTorqLow > 0xFF) torqHi++;
-
-            torqLow = (byte)(tempTorqLow & 0xFF);
-
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 16; i++)
             {
-                if ((torqLow & (1 << i)) == (1 << i))
+                if ((tempTorq & (1 << i)) == (1 << i))
                 {
-                    crc = (byte)(crc ^ byte3Table[i]);
-                }
-            }
-            for (int i = 0; i < 8; i++)
-            {
-                if ((torqHi & (1 << i)) == (1 << i))
-                {
-                    crc = (byte)(crc ^ byte4Table[i]);
+                    crc = (byte)(crc ^ swizzleTable[i]);
                 }
             }
             return crc;
